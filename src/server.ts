@@ -1,17 +1,15 @@
-import express from 'express';
-import bodyParser from 'body-parser';
-import {filterImageFromURL, deleteLocalFiles} from './util/util';
-
-(async () => {
-
+import express from 'express'
+import bodyParser from 'body-parser'
+import { filterImageFromURL, deleteLocalFiles } from './util/util'
+;(async () => {
   // Init the Express application
-  const app = express();
+  const app = express()
 
   // Set the network port
-  const port = process.env.PORT || 8082;
-  
+  const port = process.env.PORT || 8082
+
   // Use the body parser middleware for post requests
-  app.use(bodyParser.json());
+  app.use(bodyParser.json())
 
   // @TODO1 IMPLEMENT A RESTFUL ENDPOINT
   // GET /filteredimage?image_url={{URL}}
@@ -27,20 +25,31 @@ import {filterImageFromURL, deleteLocalFiles} from './util/util';
   // RETURNS
   //   the filtered image file [!!TIP res.sendFile(filteredpath); might be useful]
 
+  // Root Endpoint
+  // Gets image url and returns the filtered image
+  app.get('/filteredimage', async (req, res) => {
+    req.query.image_url
+      ? filterImageFromURL(req.query.image_url)
+          .then((data) => {
+            res.sendFile(data, () => deleteLocalFiles([data]))
+          })
+          .catch((error) => res.send(error))
+      : res.status(404).send('You need to pass a query named image_url')
+  })
+
   /**************************************************************************** */
 
   //! END @TODO1
-  
+
   // Root Endpoint
   // Displays a simple message to the user
-  app.get( "/", async ( req, res ) => {
-    res.send("try GET /filteredimage?image_url={{}}")
-  } );
-  
+  app.get('/', async (req, res) => {
+    res.send('try GET /filteredimage?image_url={{}}')
+  })
 
   // Start the Server
-  app.listen( port, () => {
-      console.log( `server running http://localhost:${ port }` );
-      console.log( `press CTRL+C to stop server` );
-  } );
-})();
+  app.listen(port, () => {
+    console.log(`server running http://localhost:${port}`)
+    console.log(`press CTRL+C to stop server`)
+  })
+})()
