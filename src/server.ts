@@ -1,16 +1,17 @@
-import express from 'express'
-import bodyParser from 'body-parser'
-import axios from 'axios'
-import { filterImageFromURL, deleteLocalFiles } from './util/util'
-;(async () => {
+import express from 'express';
+import bodyParser from 'body-parser';
+import axios from 'axios';
+import { filterImageFromURL, deleteLocalFiles } from './util/util';
+
+(async () => {
   // Init the Express application
-  const app = express()
+  const app = express();
 
   // Set the network port
-  const port = process.env.PORT || 8082
+  const port = process.env.PORT || 8082;
 
   // Use the body parser middleware for post requests
-  app.use(bodyParser.json())
+  app.use(bodyParser.json());
 
   // @TODO1 IMPLEMENT A RESTFUL ENDPOINT
   // GET /filteredimage?image_url={{URL}}
@@ -31,16 +32,16 @@ import { filterImageFromURL, deleteLocalFiles } from './util/util'
   app.get('/filteredimage', async (req, res) => {
     req.query.image_url
       ? axios
-          .get(req.query.image_url)
-          .then((data) => {
-            filterImageFromURL(data.config.url)
-              .then((data) => {
-                res.sendFile(data, () => deleteLocalFiles([data]))
-              })
-              .catch((error) => res.send(error))
-          })
-          .catch((err) => res.send('The url is not valid'))
-      : res.status(404).send('You need to pass a query named image_url')
+        .get(req.query.image_url)
+        .then((data) => {
+          filterImageFromURL(data.config.url)
+            .then((data) => {
+              res.sendFile(data, () => deleteLocalFiles([data]));
+            })
+            .catch((error) => res.send(error));
+        })
+        .catch((err) => res.send('The url is not valid'))
+      : res.status(404).send('You need to pass a query named image_url');
   })
 
   /**************************************************************************** */
@@ -50,12 +51,12 @@ import { filterImageFromURL, deleteLocalFiles } from './util/util'
   // Root Endpoint
   // Displays a simple message to the user
   app.get('/', async (req, res) => {
-    res.send('try GET /filteredimage?image_url={{}}')
+    res.send('try GET /filteredimage?image_url={{}}');
   })
 
   // Start the Server
   app.listen(port, () => {
-    console.log(`server running http://localhost:${port}`)
-    console.log(`press CTRL+C to stop server`)
+    console.log(`server running http://localhost:${port}`);
+    console.log(`press CTRL+C to stop server`);
   })
 })()
