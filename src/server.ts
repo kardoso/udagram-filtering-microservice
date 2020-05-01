@@ -36,11 +36,11 @@ import { filterImageFromURL, deleteLocalFiles } from './util/util';
         .then((data) => {
           filterImageFromURL(data.config.url)
             .then((data) => {
-              res.sendFile(data, () => deleteLocalFiles([data]));
+              res.status(200).sendFile(data, () => deleteLocalFiles([data]));
             })
-            .catch((error) => res.send(error));
+            .catch((error) => res.status(422).send(error));
         })
-        .catch((err) => res.send('The url is not valid'))
+        .catch((err) => res.status(422).send('The url is not valid'))
       : res.status(404).send('You need to pass a query named image_url');
   })
 
