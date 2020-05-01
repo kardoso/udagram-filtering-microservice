@@ -1,5 +1,6 @@
 import express from 'express'
 import bodyParser from 'body-parser'
+import axios from 'axios'
 import { filterImageFromURL, deleteLocalFiles } from './util/util'
 ;(async () => {
   // Init the Express application
@@ -29,11 +30,16 @@ import { filterImageFromURL, deleteLocalFiles } from './util/util'
   // Gets image url and returns the filtered image
   app.get('/filteredimage', async (req, res) => {
     req.query.image_url
-      ? filterImageFromURL(req.query.image_url)
+      ? axios
+          .get(req.query.image_url)
           .then((data) => {
-            res.sendFile(data, () => deleteLocalFiles([data]))
+            filterImageFromURL(data.config.url)
+              .then((data) => {
+                res.sendFile(data, () => deleteLocalFiles([data]))
+              })
+              .catch((error) => res.send(error))
           })
-          .catch((error) => res.send(error))
+          .catch((err) => res.send('The url is not valid'))
       : res.status(404).send('You need to pass a query named image_url')
   })
 
