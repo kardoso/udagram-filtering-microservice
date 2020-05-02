@@ -1,4 +1,4 @@
-import express from 'express';
+import express, { Request, Response } from 'express';
 import bodyParser from 'body-parser';
 import axios from 'axios';
 import { filterImageFromURL, deleteLocalFiles } from './util/util';
@@ -29,7 +29,7 @@ import { filterImageFromURL, deleteLocalFiles } from './util/util';
 
   // Root Endpoint
   // Gets image url and returns the filtered image
-  app.get('/filteredimage', async (req, res) => {
+  app.get('/filteredimage', async (req: Request, res: Response) => {
     req.query.image_url
       ? axios
         .get(req.query.image_url)
